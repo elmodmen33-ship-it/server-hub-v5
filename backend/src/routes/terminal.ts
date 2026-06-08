@@ -99,7 +99,7 @@ terminalRouterAPI.post("/terminal/sessions", authenticate, async (req: Request, 
         TERM: "xterm-256color",
         COLORTERM: "truecolor",
         FORCE_COLOR: "true",
-        PS1: "\\[\\033[1;35m\\]┌──(\\[\\033[1;37m\\]runner\\[\\033[1;35m\\]㉿\\[\\033[1;36m\\]serverhub\\[\\033[1;35m\\])-[\\[\\033[1;37m\\]\\w\\[\\033[1;35m\\]]\\n\\[\\033[1;35m\\]└─\\$ \\[\\033[0m\\] ",
+        PS1: "\\[\\033[1;35m\\]â”Œâ”€â”€(\\[\\033[1;37m\\]runner\\[\\033[1;35m\\]ã‰¿\\[\\033[1;36m\\]serverhub\\[\\033[1;35m\\])-[\\[\\033[1;37m\\]\\w\\[\\033[1;35m\\]]\\n\\[\\033[1;35m\\]â””â”€\\$ \\[\\033[0m\\] ",
       } as Record<string, string>,
     });
 
