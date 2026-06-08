@@ -13,6 +13,7 @@ import AdminPage from "@/pages/admin";
 import ProfilePage from "@/pages/profile";
 import SettingsPage from "@/pages/settings";
 import CommandsPage from "@/pages/commands";
+import ActivityPage from "@/pages/activity";
 import LoginPage from "@/pages/login";
 import NotFound from "@/pages/not-found";
 
@@ -78,6 +79,7 @@ function AppRoutes() {
       case "/admin": return user.role === "admin" ? <AdminPage /> : <Dashboard />;
       case "/settings": return user.role === "admin" ? <SettingsPage /> : <Dashboard />;
       case "/commands": return <CommandsPage />;
+      case "/activity": return user.role === "admin" ? <ActivityPage /> : <Dashboard />;
       case "/profile": return <ProfilePage />;
       default: return <NotFound />;
     }
