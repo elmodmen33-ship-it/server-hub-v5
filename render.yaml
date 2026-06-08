@@ -13,3 +13,7 @@ services:
         value: 3001
       - key: NODE_ENV
         value: production
+      - key: LANG
+        value: en_US.UTF-8
+      - key: LC_ALL
+        value: en_US.UTF-8
