@@ -124,6 +124,12 @@ export default function TerminalPage() {
   useEffect(() => { logsEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [logs]);
 
   useEffect(() => {
+    if (tabs.length === 0) {
+      createTab("Terminal");
+    }
+  }, []);
+
+  useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (themePickerRef.current && !themePickerRef.current.contains(e.target as Node)) {
         setShowThemePicker(false);
