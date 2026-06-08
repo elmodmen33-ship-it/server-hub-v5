@@ -23,8 +23,17 @@ app.use("/api", router);
 
 const frontendDist = path.join(process.cwd(), "..", "frontend", "dist");
 if (fs.existsSync(frontendDist)) {
-  app.use(express.static(frontendDist));
+  app.use(express.static(frontendDist, { setHeaders: (res, filePath) => {
+    if (filePath.endsWith(".html")) {
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+    } else if (filePath.endsWith(".js")) {
+      res.setHeader("Content-Type", "application/javascript; charset=utf-8");
+    } else if (filePath.endsWith(".css")) {
+      res.setHeader("Content-Type", "text/css; charset=utf-8");
+    }
+  }}));
   app.get("/{*path}", (req, res) => {
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.sendFile(path.join(frontendDist, "index.html"));
   });
 }
