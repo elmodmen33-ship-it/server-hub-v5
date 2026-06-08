@@ -168,11 +168,11 @@ export default function Dashboard() {
       ) : stats ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard title={t("cpu_usage")} value={`${stats.cpu_percent?.toFixed(1) || "0"}%`} percent={stats.cpu_percent}
-            sub={`${stats.cpu_count} ${t("cores")} · ${t("load")}: ${stats.load_avg?.toFixed(2) ?? "N/A"}`} icon={Cpu} color="#8b5cf6" />
+            sub={`${stats.cpu_count} ${t("cores")} Â· ${t("load")}: ${stats.load_avg?.toFixed(2) ?? "N/A"}`} icon={Cpu} color="#8b5cf6" />
           <MetricCard title={t("memory")} value={stats.mem_used} percent={stats.mem_percent}
-            sub={`${t("of")} ${stats.mem_total}${stats.mem_available ? ` · ${stats.mem_available} free` : ""}`} icon={MemoryStick} color="#a855f7" />
+            sub={`${t("of")} ${stats.mem_total}${stats.mem_available ? ` Â· ${stats.mem_available} free` : ""}`} icon={MemoryStick} color="#a855f7" />
           <MetricCard title={t("disk_space")} value={stats.disk_used} percent={stats.disk_percent}
-            sub={`${t("of")} ${stats.disk_total}${stats.disk_free ? ` · ${stats.disk_free} free` : ""}`} icon={HardDrive} color="#6d28d9" />
+            sub={`${t("of")} ${stats.disk_total}${stats.disk_free ? ` Â· ${stats.disk_free} free` : ""}`} icon={HardDrive} color="#6d28d9" />
           <MetricCard title={t("uptime")} value={stats.uptime}
             sub={stats.timestamp ? new Date(stats.timestamp).toLocaleDateString() : undefined} icon={Clock} color="#7c3aed" />
         </div>
