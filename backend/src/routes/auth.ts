@@ -6,6 +6,7 @@ import { signToken } from "../lib/jwt";
 import { authenticate } from "../middleware/authenticate";
 import { notify } from "../lib/telegram";
 import { logger } from "../lib/logger";
+import { logActivity } from "./activity";
 
 const router: IRouter = Router();
 
@@ -15,14 +16,20 @@ router.post("/auth/login", async (req: Request, res: Response): Promise<void> =>
     if (!username || !password) { res.status(400).json({ message: "Username and password required" }); return; }
     const user = storage.getUserByUsername(username);
     if (!user || !bcrypt.compareSync(password, user.password_hash)) {
+      logActivity({ user: username || "unknown", action: "login", target: "auth", details: "Invalid credentials", ip: req.ip || "unknown", status: "failed" });
       res.status(401).json({ message: "Invalid username or password" }); return;
     }
-    if (user.disabled) { res.status(403).json({ message: "Account is disabled" }); return; }
+    if (user.disabled) {
+      logActivity({ user: username, action: "login", target: "auth", details: "Account disabled", ip: req.ip || "unknown", status: "failed" });
+      res.status(403).json({ message: "Account is disabled" }); return;
+    }
     if (user.expires_at && new Date(user.expires_at) < new Date()) {
+      logActivity({ user: username, action: "login", target: "auth", details: "Account expired", ip: req.ip || "unknown", status: "failed" });
       res.status(403).json({ message: "Account has expired" }); return;
     }
     storage.updateUser(user.id, { last_login: new Date().toISOString() });
     const token = signToken({ userId: user.id, username: user.username, role: user.role });
+    logActivity({ user: username, action: "login", target: "auth", details: "Logged in successfully", ip: req.ip || "unknown", status: "success" });
     notify("login", `User *${user.username}* logged in from SERVER HUB v5`);
     res.json({ token, user: { id: user.id, username: user.username, role: user.role, display_name: user.display_name, avatar: user.avatar, expires_at: user.expires_at } });
   } catch (err) {
