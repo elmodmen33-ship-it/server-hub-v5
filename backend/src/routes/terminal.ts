@@ -98,14 +98,61 @@ terminalRouterAPI.post("/terminal/sessions", async (req: Request, res: Response)
         TERM: "xterm-256color",
         COLORTERM: "truecolor",
         FORCE_COLOR: "true",
-        PS1: "\\[\\033[32m\\]\\u@serverhub:\\w$\\[\\033[0m\\] ",
+        PS1: "\\[\\033[1;35m\\]┌──(\\[\\033[1;37m\\]runner\\[\\033[1;35m\\]㉿\\[\\033[1;36m\\]serverhub\\[\\033[1;35m\\])-[\\[\\033[1;37m\\]\\w\\[\\033[1;35m\\]]\\n\\[\\033[1;35m\\]└─\\$ \\[\\033[0m\\] ",
       } as Record<string, string>,
     });
 
     session.ptyProcess = ptyProcess;
 
     if (!isWindows) {
-      const welcomeCmd = `printf '\\n\\033[1;35m╔══════════════════════════════════════════════════════════╗\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m                                                          \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m     \\033[1;37m ███████╗ ██████╗ ██████╗ ██████╗ ███████╗\\033[0m       \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m     \\033[1;37m██╔════╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝\\033[0m       \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m     \\033[1;37m█████╗  ██║   ██║██████╔╝██████╔╝█████╗\\033[0m         \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m     \\033[1;37m██╔══╝  ██║   ██║██╔═══╝ ██╔══██╗██╔══╝\\033[0m         \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m     \\033[1;37m██║     ╚██████╔╝██║     ██║  ██║███████╗\\033[0m       \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m     \\033[1;37m╚═╝      ╚═════╝ ╚═╝     ╚═╝  ╚═╝╚══════╝\\033[0m       \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m                                                          \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m            \\033[1;36mServer Hub v5 Terminal\\033[0m                     \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m                                                          \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m  \\033[1;33mFeatures:\\033[0m                                            \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m    \\033[1;32m•\\033[0m \\033[1;37mFull Linux Environment (apt, sudo, bash)\\033[0m     \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m    \\033[1;32m•\\033[0m \\033[1;37mPackage Management (apt install)\\033[0m             \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m    \\033[1;32m•\\033[0m \\033[1;37mFile Management (ls, cat, vim, nano)\\033[0m          \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m    \\033[1;32m•\\033[0m \\033[1;37mNetwork Tools (curl, wget, ping, ssh)\\033[0m         \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m    \\033[1;32m•\\033[0m \\033[1;37mSystem Monitoring (htop, top, df)\\033[0m             \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m║\\033[0m                                                          \\033[1;35m║\\033[0m\\n'\\nprintf '\\033[1;35m╚══════════════════════════════════════════════════════════╝\\033[0m\\n'\\nprintf '\\n'\\nexport PS1='\\[\\033[32m\\]┌──(\\[\\033[37m\\]runner\\[\\033[90m\\]㉿\\[\\033[37m\\]serverhub\\[\\033[32m\\])-[\\[\\033[34m\\]\\w\\[\\033[0m\\]]\\n\\[\\033[32m\\]└─\\[\\033[0m\\]\\$ '`;
+      const welcomeCmd = [
+        "printf '\\n\\033[1;35m'",
+        "printf '╔══════════════════════════════════════════════════╗\\n'",
+        "printf '║                                                  ║\\n'",
+        "printf '║   \\033[1;37m  ███████╗ ██████╗ ██████╗ ██████╗ ███████╗  \\033[1;35m║\\n'",
+        "printf '║   \\033[1;37m  ██╔════╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝  \\033[1;35m║\\n'",
+        "printf '║   \\033[1;37m  █████╗  ██║   ██║██████╔╝██████╔╝█████╗    \\033[1;35m║\\n'",
+        "printf '║   \\033[1;37m  ██╔══╝  ██║   ██║██╔═══╝ ██╔══██╗██╔══╝    \\033[1;35m║\\n'",
+        "printf '║   \\033[1;37m  ██║     ╚██████╔╝██║     ██║  ██║███████╗  \\033[1;35m║\\n'",
+        "printf '║   \\033[1;37m  ╚═╝      ╚═════╝ ╚═╝     ╚═╝  ╚═╝╚══════╝  \\033[1;35m║\\n'",
+        "printf '║                                                  ║\\n'",
+        "printf '║        \\033[1;36m[ Server Hub v5 Terminal ]\\033[1;35m            ║\\n'",
+        "printf '║                                                  ║\\n'",
+        "printf '║   \\033[1;33mFeatures:\\033[1;35m                                   ║\\n'",
+        "printf '║     \\033[1;32m*\\033[1;37m Full Linux Environment (apt, bash)       \\033[1;35m║\\n'",
+        "printf '║     \\033[1;32m*\\033[1;37m Package Management (apt install)         \\033[1;35m║\\n'",
+        "printf '║     \\033[1;32m*\\033[1;37m File Management (ls, cat, vim, nano)     \\033[1;35m║\\n'",
+        "printf '║     \\033[1;32m*\\033[1;37m Network Tools (curl, wget, ping, ssh)    \\033[1;35m║\\n'",
+        "printf '║     \\033[1;32m*\\033[1;37m System Monitoring (htop, top, df)        \\033[1;35m║\\n'",
+        "printf '║                                                  ║\\n'",
+        "printf '╚══════════════════════════════════════════════════╝\\n'",
+        "printf '\\033[0m'",
+      ].join(" && ");
+      setTimeout(() => { ptyProcess.write(welcomeCmd + '\n'); }, 500);
+    } else {
+      const welcomeCmd = [
+        "Write-Host ''",
+        "Write-Host '╔══════════════════════════════════════════════════╗' -ForegroundColor Magenta",
+        "Write-Host '║                                                  ║' -ForegroundColor Magenta",
+        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  ███████╗ ██████╗ ██████╗ ██████╗ ███████╗  ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
+        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  ██╔════╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝  ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
+        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  █████╗  ██║   ██║██████╔╝██████╔╝█████╗    ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
+        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  ██╔══╝  ██║   ██║██╔═══╝ ██╔══██╗██╔══╝    ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
+        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  ██║     ╚██████╔╝██║     ██║  ██║███████╗  ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
+        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  ╚═╝      ╚═════╝ ╚═╝     ╚═╝  ╚═╝╚══════╝  ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
+        "Write-Host '║                                                  ║' -ForegroundColor Magenta",
+        "Write-Host '║        ' -ForegroundColor Magenta -NoNewline; Write-Host '[ Server Hub v5 Terminal ]' -ForegroundColor Cyan -NoNewline; Write-Host '            ║' -ForegroundColor Magenta",
+        "Write-Host '║                                                  ║' -ForegroundColor Magenta",
+        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host 'Features:' -ForegroundColor Yellow -NoNewline; Write-Host '                                   ║' -ForegroundColor Magenta",
+        "Write-Host '║     ' -ForegroundColor Magenta -NoNewline; Write-Host '*' -ForegroundColor Green -NoNewline; Write-Host ' Full Windows Environment (PowerShell)   ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
+        "Write-Host '║     ' -ForegroundColor Magenta -NoNewline; Write-Host '*' -ForegroundColor Green -NoNewline; Write-Host ' Package Management (winget, choco)      ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
+        "Write-Host '║     ' -ForegroundColor Magenta -NoNewline; Write-Host '*' -ForegroundColor Green -NoNewline; Write-Host ' File Management (ls, cat, vim, nano)     ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
+        "Write-Host '║     ' -ForegroundColor Magenta -NoNewline; Write-Host '*' -ForegroundColor Green -NoNewline; Write-Host ' Network Tools (curl, wget, ping, ssh)    ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
+        "Write-Host '║     ' -ForegroundColor Magenta -NoNewline; Write-Host '*' -ForegroundColor Green -NoNewline; Write-Host ' System Monitoring (tasklist, df)         ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
+        "Write-Host '║                                                  ║' -ForegroundColor Magenta",
+        "Write-Host '╚══════════════════════════════════════════════════╝' -ForegroundColor Magenta",
+        "Write-Host ''",
+      ].join(" ; ");
       setTimeout(() => { ptyProcess.write(welcomeCmd + '\n'); }, 500);
     }
 
