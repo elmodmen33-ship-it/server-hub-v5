@@ -73,6 +73,17 @@ export const api = {
     request<{ success: boolean }>("/api/tunnel/stop", { method: "POST" }),
 
   getLogs: () => request<any[]>("/api/logs"),
+
+  getActivity: (params?: { q?: string; action?: string; status?: string; limit?: number }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.q) searchParams.set("q", params.q);
+    if (params?.action) searchParams.set("action", params.action);
+    if (params?.status) searchParams.set("status", params.status);
+    if (params?.limit) searchParams.set("limit", String(params.limit));
+    return request<{ items: any[]; total: number }>(`/api/activity?${searchParams.toString()}`);
+  },
+  getActivityStats: () => request<any>("/api/activity/stats"),
+  clearActivity: () => request<{ success: boolean }>("/api/activity", { method: "DELETE" }),
 };
 
 export function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
