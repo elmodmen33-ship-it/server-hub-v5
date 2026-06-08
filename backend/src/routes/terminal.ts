@@ -7,6 +7,7 @@ import * as os from "os";
 import * as path from "path";
 import { execSync } from "child_process";
 import * as fs from "fs";
+import { authenticate } from "../middleware/authenticate";
 
 export const terminalRouterAPI: IRouter = Router();
 
@@ -46,14 +47,14 @@ function getShellInitScript(): string {
   }
 }
 
-terminalRouterAPI.get("/terminal/sessions", async (_req: Request, res: Response): Promise<void> => {
+terminalRouterAPI.get("/terminal/sessions", authenticate, async (_req: Request, res: Response): Promise<void> => {
   const list = Array.from(sessions.values()).map((s) => ({
     id: s.id, name: s.name, created_at: s.created_at, status: s.status,
   }));
   res.json(list);
 });
 
-terminalRouterAPI.post("/terminal/sessions", async (req: Request, res: Response): Promise<void> => {
+terminalRouterAPI.post("/terminal/sessions", authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
     const { name = "Terminal", cwd } = req.body;
     const id = generateId();
@@ -104,41 +105,7 @@ terminalRouterAPI.post("/terminal/sessions", async (req: Request, res: Response)
 
     session.ptyProcess = ptyProcess;
 
-    const writeWelcome = () => {
-      const ESC = "\x1b";
-      const M = `${ESC}[1;35m`;
-      const W = `${ESC}[1;37m`;
-      const C = `${ESC}[1;36m`;
-      const Y = `${ESC}[1;33m`;
-      const R = `${ESC}[0m`;
-      const lines = [
-        "",
-        `${M}╔══════════════════════════════════════════════════════════════╗${R}`,
-        `${M}║${R}                                                              ${M}║${R}`,
-        `${M}║${R}   ${W}  ███╗   ███╗██╗   ██╗██████╗ ██████╗ ███████╗ ██████╗  ${M}║${R}`,
-        `${M}║${R}   ${W}  ████╗ ████║██║   ██║██╔══██╗██╔══██╗██╔════╝██╔═══██╗ ${M}║${R}`,
-        `${M}║${R}   ${W}  ██╔████╔██║██║   ██║██████╔╝██████╔╝█████╗  ██║   ██║ ${M}║${R}`,
-        `${M}║${R}   ${W}  ██║╚██╔╝██║██║   ██║██╔═══╝ ██╔══██╗██╔══╝  ██║   ██║ ${M}║${R}`,
-        `${M}║${R}   ${W}  ██║ ╚═╝ ██║╚██████╔╝██║     ██║  ██║███████╗╚██████╔╝ ${M}║${R}`,
-        `${M}║${R}   ${W}  ╚═╝     ╚═╝ ╚═════╝ ╚═╝     ╚═╝  ╚═╝╚══════╝ ╚═════╝  ${M}║${R}`,
-        `${M}║${R}                                                              ${M}║${R}`,
-        `${M}║${R}              ${C}[ Server Hub v5 Terminal ]${R}                     ${M}║${R}`,
-        `${M}║${R}                                                              ${M}║${R}`,
-        `${M}║${R}   ${Y}*${R} ${W}Full Linux Environment (apt, sudo, bash)${R}           ${M}║${R}`,
-        `${M}║${R}   ${Y}*${R} ${W}Package Management (apt install)${R}                   ${M}║${R}`,
-        `${M}║${R}   ${Y}*${R} ${W}File Management (ls, cat, vim, nano)${R}                ${M}║${R}`,
-        `${M}║${R}   ${Y}*${R} ${W}Network Tools (curl, wget, ping, ssh)${R}               ${M}║${R}`,
-        `${M}║${R}   ${Y}*${R} ${W}System Monitoring (htop, top, df)${R}                   ${M}║${R}`,
-        `${M}║${R}                                                              ${M}║${R}`,
-        `${M}╚══════════════════════════════════════════════════════════════╝${R}`,
-        "",
-      ];
-      for (const line of lines) {
-        ptyProcess.write(line + "\r\n");
-      }
-    };
-
-    setTimeout(writeWelcome, 600);((data: string) => {
+    ptyProcess.onData((data: string) => {
       const msg = JSON.stringify({ type: "output", data });
       session.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) client.send(msg);
@@ -166,7 +133,7 @@ terminalRouterAPI.post("/terminal/sessions", async (req: Request, res: Response)
   }
 });
 
-terminalRouterAPI.delete("/terminal/sessions/:id", async (req: Request, res: Response): Promise<void> => {
+terminalRouterAPI.delete("/terminal/sessions/:id", authenticate, async (req: Request, res: Response): Promise<void> => {
   const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const session = sessions.get(rawId);
   if (!session) { res.status(404).json({ success: false, message: "Session not found" }); return; }
