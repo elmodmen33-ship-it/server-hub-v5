@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { Terminal as XTerm } from "xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { WebLinksAddon } from "@xterm/addon-web-links";
+import { Unicode11Addon } from "@xterm/addon-unicode11";
 import "xterm/css/xterm.css";
 import {
   Plus, X, RotateCcw, Trash2, TerminalSquare,
@@ -233,8 +234,11 @@ export default function TerminalPage() {
 
     const fitAddon = new FitAddon();
     const webLinksAddon = new WebLinksAddon();
+    const unicode11Addon = new Unicode11Addon();
     term.loadAddon(fitAddon);
     term.loadAddon(webLinksAddon);
+    term.loadAddon(unicode11Addon);
+    term.unicode.activeVersion = "11";
     term.open(el);
 
     requestAnimationFrame(() => { try { fitAddon.fit(); } catch {} });
@@ -504,8 +508,8 @@ export default function TerminalPage() {
       {activeTabId && tabs.length > 0 && (
         <div className="flex items-center justify-between px-4 py-1 border-t shrink-0 text-xs font-mono" style={{ background: headerBg, borderColor: "var(--border)" }}>
           <div className="flex items-center gap-3 text-zinc-700">
-            <span>bash</span><span>Â·</span>
-            <span>{tabs.find((t) => t.id === activeTabId)?.name}</span><span>Â·</span>
+            <span>bash</span><span>·</span>
+            <span>{tabs.find((t) => t.id === activeTabId)?.name}</span><span>·</span>
             <span className="text-zinc-600">{tabs.length} session(s)</span>
           </div>
           <div className="flex items-center gap-2">
