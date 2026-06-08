@@ -84,7 +84,7 @@ terminalRouterAPI.post("/terminal/sessions", authenticate, async (req: Request, 
       }
     } else {
       shell = process.env.SHELL || "/bin/bash";
-      shellArgs = ["--norc", "--noprofile", "-i"];
+      shellArgs = ["-i"];
     }
 
     const useWsl = isWindows && detectWslShell() !== null;
@@ -108,11 +108,15 @@ terminalRouterAPI.post("/terminal/sessions", authenticate, async (req: Request, 
 
     if (!isWindows) {
       setTimeout(() => {
+        ptyProcess.write("export LANG=en_US.UTF-8\n");
+        ptyProcess.write("export LC_ALL=en_US.UTF-8\n");
+        ptyProcess.write("export TERM=xterm-256color\n");
+        ptyProcess.write("stty utf8\n");
         ptyProcess.write("export PS1='\\[\\033[1;35m\\]\\u@\\h:\\w\\$ \\[\\033[0m\\]'\n");
         ptyProcess.write("bind 'set completion-ignore-case on'\n");
         ptyProcess.write("bind 'set show-all-if-ambiguous on'\n");
         ptyProcess.write("bind 'set colored-stats on'\n");
-      }, 300);
+      }, 500);
     }
 
     ptyProcess.onData((data: string) => {
