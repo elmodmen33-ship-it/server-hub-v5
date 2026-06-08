@@ -126,6 +126,8 @@ const translations = {
     close: "Close",
     back: "Back",
     server_hub: "SERVER HUB",
+    activity_log: "Activity Log",
+    track_all_actions: "Track all user actions and events",
   },
   ar: {
     dashboard: "Ù„ÙˆØ­Ø© Ø§Ù„ØªØ­ÙƒÙ…",
@@ -250,6 +252,8 @@ const translations = {
     close: "Ø¥ØºÙ„Ø§Ù‚",
     back: "Ø±Ø¬ÙˆØ¹",
     server_hub: "Ø³ÙŠØ±ÙØ± Ù‡Ø§Ø¨",
+    activity_log: "Ø³Ø¬Ù„ Ø§Ù„Ù†Ø´Ø§Ø·",
+    track_all_actions: "ØªØªØ¨Ø¹ Ø¬Ù…ÙŠØ¹ Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ† ÙˆØ§Ù„Ø£Ø­Ø¯Ø§Ø«",
   },
 } as const;
 
