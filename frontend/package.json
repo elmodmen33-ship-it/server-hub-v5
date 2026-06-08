@@ -12,6 +12,7 @@
     "@monaco-editor/react": "^4.7.0",
     "@rollup/wasm-node": "^4.61.1",
     "@xterm/addon-fit": "^0.11.0",
+    "@xterm/addon-unicode11": "^0.9.0",
     "@xterm/addon-web-links": "^0.12.0",
     "lightningcss": "^1.32.0",
     "lucide-react": "^0.468.0",
