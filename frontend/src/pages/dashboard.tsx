@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import {
   Activity, Cpu, HardDrive, Server, Network, Clock,
   Zap, MemoryStick, Wifi, X, RefreshCw,
-  TrendingUp, Globe,
+  TrendingUp, Globe, Terminal, Folder, Bot, Shield,
+  ArrowUpRight, ArrowDownRight, Minus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,20 +27,22 @@ function RadialProgress({ value, size = 80, stroke = 8, color = "#8b5cf6" }: {
   );
 }
 
-function MetricCard({ title, value, percent, sub, icon: Icon, color = "#8b5cf6" }: {
-  title: string; value: string; percent?: number; sub?: string; icon: any; color?: string;
+function MetricCard({ title, value, percent, sub, icon: Icon, color = "#8b5cf6", trend }: {
+  title: string; value: string; percent?: number; sub?: string; icon: any; color?: string; trend?: "up" | "down" | "stable";
 }) {
   const isHigh = (percent || 0) > 85;
   const isMed = (percent || 0) > 65;
   const ringColor = isHigh ? "#ef4444" : isMed ? "#f59e0b" : color;
   return (
-    <div className="relative rounded-2xl border p-5 overflow-hidden flex flex-col gap-3"
-      style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.2)" }}>
-      <div className="flex items-start justify-between">
+    <div className="relative rounded-2xl border p-5 overflow-hidden flex flex-col gap-3 group hover:border-accent/30 transition-all duration-300"
+      style={{ background: "linear-gradient(135deg, #140a24 0%, #1a0e30 100%)", borderColor: "rgba(139,92,246,0.15)" }}>
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{ background: `radial-gradient(circle at 50% 0%, ${color}10 0%, transparent 60%)` }} />
+      <div className="flex items-start justify-between relative z-10">
         <div>
-          <p className="text-xs text-zinc-500 font-medium uppercase tracking-widest">{title}</p>
-          <p className="text-2xl font-bold text-white mt-1">{value}</p>
-          {sub && <p className="text-xs text-zinc-500 mt-0.5">{sub}</p>}
+          <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-[0.2em]">{title}</p>
+          <p className="text-2xl font-bold text-white mt-1 tracking-tight">{value}</p>
+          {sub && <p className="text-[11px] text-zinc-500 mt-0.5">{sub}</p>}
         </div>
         {percent !== undefined ? (
           <div className="relative flex items-center justify-center">
@@ -47,19 +50,33 @@ function MetricCard({ title, value, percent, sub, icon: Icon, color = "#8b5cf6" 
             <span className="absolute text-xs font-bold" style={{ color: ringColor }}>{Math.round(percent)}%</span>
           </div>
         ) : (
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}20` }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
             <Icon className="w-5 h-5" style={{ color }} />
           </div>
         )}
       </div>
       {percent !== undefined && (
-        <div className="h-1.5 rounded-full overflow-hidden bg-white/5">
+        <div className="h-1.5 rounded-full overflow-hidden bg-white/5 relative z-10">
           <div className="h-full rounded-full transition-all duration-700"
-            style={{ width: `${Math.min(100, percent)}%`, background: `linear-gradient(90deg, ${ringColor}80, ${ringColor})` }} />
+            style={{ width: `${Math.min(100, percent)}%`, background: `linear-gradient(90deg, ${ringColor}60, ${ringColor})` }} />
         </div>
       )}
-      <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${ringColor}40, transparent)` }} />
+      <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${ringColor}30, transparent)` }} />
     </div>
+  );
+}
+
+function QuickAction({ icon: Icon, label, color, onClick }: { icon: any; label: string; color: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick}
+      className="flex flex-col items-center gap-2 p-4 rounded-xl border hover:scale-105 transition-all duration-200 cursor-pointer group"
+      style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.1)" }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform"
+        style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
+        <Icon className="w-5 h-5" style={{ color }} />
+      </div>
+      <span className="text-xs text-zinc-400 font-medium group-hover:text-white transition-colors">{label}</span>
+    </button>
   );
 }
 
@@ -105,29 +122,43 @@ export default function Dashboard() {
 
   return (
     <div className="p-5 max-w-7xl mx-auto space-y-5">
+      {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight flex items-center gap-2">
-            <Activity className="w-5 h-5 text-accent" /> {t("system_overview")}
-          </h1>
-          <p className="text-zinc-500 text-sm mt-0.5">{t("live_monitoring")}</p>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{ background: "linear-gradient(135deg,#6d28d9,#a855f7)", boxShadow: "0 0 20px rgba(139,92,246,0.3)" }}>
+            <Activity className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold tracking-tight">{t("system_overview")}</h1>
+            <p className="text-zinc-500 text-sm">{t("live_monitoring")}</p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           {stats && (
-            <div className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-full border" style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.2)" }}>
+            <div className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl border" style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.2)" }}>
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               <Globe className="w-3.5 h-3.5 text-zinc-500" />
               <span className="font-mono text-zinc-300 text-xs">{stats.hostname}</span>
               {stats.ip && <span className="text-zinc-600 text-xs font-mono">{stats.ip}</span>}
             </div>
           )}
-          <div className="text-xs font-mono text-zinc-600 tabular-nums">{now.toLocaleTimeString()}</div>
+          <div className="text-xs font-mono text-zinc-600 tabular-nums bg-white/5 px-3 py-1.5 rounded-xl">{now.toLocaleTimeString()}</div>
           <Button variant="ghost" size="sm" onClick={fetchStats} className="h-8 w-8 p-0 text-zinc-500 hover:text-white">
             <RefreshCw className="w-3.5 h-3.5" />
           </Button>
         </div>
       </div>
 
+      {/* Quick Actions */}
+      <div className="grid grid-cols-4 md:grid-cols-4 gap-3">
+        <QuickAction icon={Terminal} label={t("terminal")} color="#8b5cf6" onClick={() => window.location.hash = "#/terminal"} />
+        <QuickAction icon={Folder} label={t("files")} color="#a855f7" onClick={() => window.location.hash = "#/files"} />
+        <QuickAction icon={Bot} label={t("ai_chat")} color="#6d28d9" onClick={() => window.location.hash = "#/ai"} />
+        <QuickAction icon={Shield} label={t("admin")} color="#7c3aed" onClick={() => window.location.hash = "#/admin"} />
+      </div>
+
+      {/* Main Metrics */}
       {statsLoading ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
@@ -147,46 +178,70 @@ export default function Dashboard() {
         </div>
       ) : null}
 
+      {/* Secondary Stats */}
       {stats && (stats.net_sent || stats.net_recv || stats.cpu_freq) && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {stats.net_sent && (
-            <div className="rounded-2xl border p-4 flex items-center gap-4" style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.15)" }}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(34,197,94,0.1)" }}>
-                <TrendingUp className="w-5 h-5 text-green-400" />
+            <div className="rounded-xl border p-3.5 flex items-center gap-3 hover:border-green-500/30 transition-colors"
+              style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.1)" }}>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)" }}>
+                <ArrowUpRight className="w-4 h-4 text-green-400" />
               </div>
-              <div><p className="text-xs text-zinc-500 uppercase tracking-wider">Net Sent</p><p className="text-base font-bold text-white font-mono">{stats.net_sent}</p></div>
+              <div>
+                <p className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">Sent</p>
+                <p className="text-sm font-bold text-white font-mono">{stats.net_sent}</p>
+              </div>
             </div>
           )}
           {stats.net_recv && (
-            <div className="rounded-2xl border p-4 flex items-center gap-4" style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.15)" }}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(59,130,246,0.1)" }}>
-                <Network className="w-5 h-5 text-blue-400" />
+            <div className="rounded-xl border p-3.5 flex items-center gap-3 hover:border-blue-500/30 transition-colors"
+              style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.1)" }}>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)" }}>
+                <ArrowDownRight className="w-4 h-4 text-blue-400" />
               </div>
-              <div><p className="text-xs text-zinc-500 uppercase tracking-wider">Net Received</p><p className="text-base font-bold text-white font-mono">{stats.net_recv}</p></div>
+              <div>
+                <p className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">Received</p>
+                <p className="text-sm font-bold text-white font-mono">{stats.net_recv}</p>
+              </div>
             </div>
           )}
           {stats.cpu_freq && (
-            <div className="rounded-2xl border p-4 flex items-center gap-4" style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.15)" }}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(139,92,246,0.1)" }}>
-                <Zap className="w-5 h-5 text-accent" />
+            <div className="rounded-xl border p-3.5 flex items-center gap-3 hover:border-accent/30 transition-colors"
+              style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.1)" }}>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)" }}>
+                <Zap className="w-4 h-4 text-accent" />
               </div>
-              <div><p className="text-xs text-zinc-500 uppercase tracking-wider">CPU Frequency</p><p className="text-base font-bold text-white font-mono">{stats.cpu_freq}</p></div>
+              <div>
+                <p className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">CPU Freq</p>
+                <p className="text-sm font-bold text-white font-mono">{stats.cpu_freq}</p>
+              </div>
             </div>
           )}
-          <div className="rounded-2xl border p-4 flex items-center gap-4" style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.15)" }}>
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(168,85,247,0.1)" }}>
-              <Server className="w-5 h-5 text-accent" />
+          <div className="rounded-xl border p-3.5 flex items-center gap-3 hover:border-purple-500/30 transition-colors"
+            style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.1)" }}>
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.2)" }}>
+              <Server className="w-4 h-4 text-purple-400" />
             </div>
-            <div><p className="text-xs text-zinc-500 uppercase tracking-wider">Processes</p><p className="text-base font-bold text-white font-mono">{stats.processes}</p></div>
+            <div>
+              <p className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">Processes</p>
+              <p className="text-sm font-bold text-white font-mono">{stats.processes}</p>
+            </div>
           </div>
         </div>
       )}
 
+      {/* Ports & Processes */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div className="rounded-2xl border flex flex-col" style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.2)", minHeight: 360, maxHeight: 420 }}>
-          <div className="flex items-center justify-between px-4 py-3 border-b shrink-0" style={{ borderColor: "rgba(139,92,246,0.15)" }}>
-            <div className="flex items-center gap-2"><Wifi className="w-4 h-4 text-accent" /><span className="font-semibold text-sm">{t("open_ports")}</span></div>
-            <Badge className="text-xs bg-accent/10 text-accent border-accent/20">{ports?.length ?? 0}</Badge>
+        {/* Open Ports */}
+        <div className="rounded-2xl border flex flex-col" style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.15)", minHeight: 360, maxHeight: 420 }}>
+          <div className="flex items-center justify-between px-4 py-3 border-b shrink-0" style={{ borderColor: "rgba(139,92,246,0.1)" }}>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "rgba(139,92,246,0.1)" }}>
+                <Wifi className="w-3.5 h-3.5 text-accent" />
+              </div>
+              <span className="font-semibold text-sm">{t("open_ports")}</span>
+            </div>
+            <Badge className="text-[10px] bg-accent/10 text-accent border-accent/20 font-mono">{ports?.length ?? 0}</Badge>
           </div>
           <div className="flex-1 overflow-auto">
             {portsLoading ? (
@@ -199,9 +254,12 @@ export default function Dashboard() {
                       <div className="px-2 py-0.5 rounded text-xs font-mono font-bold border" style={{ background: "rgba(139,92,246,0.15)", borderColor: "rgba(139,92,246,0.3)", color: "#a855f7" }}>
                         :{port.port}
                       </div>
-                      <div><span className="text-sm font-medium text-white">{port.process || "unknown"}</span>{port.pid && <span className="text-xs text-zinc-600 font-mono ml-2">PID:{port.pid}</span>}</div>
+                      <div>
+                        <span className="text-sm font-medium text-white">{port.process || "unknown"}</span>
+                        {port.pid && <span className="text-[10px] text-zinc-600 font-mono ml-2">PID:{port.pid}</span>}
+                      </div>
                     </div>
-                    <span className="text-xs text-zinc-600 font-mono">{port.addr}</span>
+                    <span className="text-[10px] text-zinc-600 font-mono">{port.addr}</span>
                   </div>
                 ))}
               </div>
@@ -213,11 +271,17 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="rounded-2xl border flex flex-col" style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.2)", minHeight: 360, maxHeight: 420 }}>
-          <div className="flex items-center justify-between px-4 py-3 border-b shrink-0" style={{ borderColor: "rgba(139,92,246,0.15)" }}>
-            <div className="flex items-center gap-2"><Activity className="w-4 h-4 text-accent" /><span className="font-semibold text-sm">{t("top_processes")}</span></div>
+        {/* Top Processes */}
+        <div className="rounded-2xl border flex flex-col" style={{ background: "#140a24", borderColor: "rgba(139,92,246,0.15)", minHeight: 360, maxHeight: 420 }}>
+          <div className="flex items-center justify-between px-4 py-3 border-b shrink-0" style={{ borderColor: "rgba(139,92,246,0.1)" }}>
             <div className="flex items-center gap-2">
-              <Badge className="text-xs bg-white/5 text-zinc-400 border-white/10">{processes?.length ?? 0}</Badge>
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "rgba(139,92,246,0.1)" }}>
+                <Activity className="w-3.5 h-3.5 text-accent" />
+              </div>
+              <span className="font-semibold text-sm">{t("top_processes")}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge className="text-[10px] bg-white/5 text-zinc-400 border-white/10 font-mono">{processes?.length ?? 0}</Badge>
               <Button variant="ghost" size="sm" onClick={fetchProcesses} className="h-6 w-6 p-0 text-zinc-600 hover:text-white">
                 <RefreshCw className="w-3 h-3" />
               </Button>
