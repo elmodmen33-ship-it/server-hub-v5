@@ -12,7 +12,7 @@ COPY backend/package.json backend/package-lock.json* ./
 RUN npm install
 
 COPY frontend/package.json frontend/package-lock.json* ./../frontend/
-RUN cd ../frontend && npm install
+RUN cd ../frontend && npm install --force
 
 COPY . .
 
