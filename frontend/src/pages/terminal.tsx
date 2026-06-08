@@ -13,7 +13,7 @@ import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
 type ConnStatus = "connecting" | "connected" | "reconnecting" | "offline";
-type ThemeKey = "dark" | "kali" | "ubuntu" | "hacker";
+type ThemeKey = "dark" | "kali" | "ubuntu" | "hacker" | "dracula";
 
 interface Tab {
   id: string;
@@ -29,38 +29,38 @@ interface TabResources {
 }
 
 const KALI_THEME = {
-  background: "#0a0a0a",
+  background: "#1a1a2e",
   foreground: "#00ff41",
   cursor: "#00ff41",
-  cursorAccent: "#0a0a0a",
+  cursorAccent: "#1a1a2e",
   selection: "rgba(0,255,65,0.3)",
-  black: "#000000", red: "#ff3333", green: "#00ff41", yellow: "#ffff00",
-  blue: "#3399ff", magenta: "#ff66ff", cyan: "#00ffff", white: "#cccccc",
+  black: "#0a0a0a", red: "#ff4444", green: "#00ff41", yellow: "#ffd700",
+  blue: "#00bfff", magenta: "#ff69b4", cyan: "#00ffff", white: "#e0e0e0",
   brightBlack: "#555555", brightRed: "#ff6666", brightGreen: "#55ff55",
   brightYellow: "#ffff55", brightBlue: "#66bbff", brightMagenta: "#ff99ff",
   brightCyan: "#55ffff", brightWhite: "#ffffff",
 };
 
 const DARK_THEME = {
-  background: "#0d0d1a",
-  foreground: "#00ff41",
-  cursor: "#00ff41",
-  cursorAccent: "#0d0d1a",
-  selection: "rgba(0,255,65,0.25)",
-  black: "#0a0a0a", red: "#ff3333", green: "#00ff41", yellow: "#ffff00",
-  blue: "#3399ff", magenta: "#ff66ff", cyan: "#00ffff", white: "#cccccc",
-  brightBlack: "#555555", brightRed: "#ff6666", brightGreen: "#55ff55",
-  brightYellow: "#ffff55", brightBlue: "#66bbff", brightMagenta: "#ff99ff",
-  brightCyan: "#55ffff", brightWhite: "#ffffff",
+  background: "#0d1117",
+  foreground: "#c9d1d9",
+  cursor: "#58a6ff",
+  cursorAccent: "#0d1117",
+  selection: "rgba(88,166,255,0.3)",
+  black: "#0d1117", red: "#ff7b72", green: "#3fb950", yellow: "#d29922",
+  blue: "#58a6ff", magenta: "#bc8cff", cyan: "#39c5cf", white: "#c9d1d9",
+  brightBlack: "#484f58", brightRed: "#ffa198", brightGreen: "#56d364",
+  brightYellow: "#e3b341", brightBlue: "#79c0ff", brightMagenta: "#d2a8ff",
+  brightCyan: "#56d4dd", brightWhite: "#f0f6fc",
 };
 
 const UBUNTU_THEME = {
-  background: "#2d1b0e",
+  background: "#300a24",
   foreground: "#eeeeec",
-  cursor: "#4e9a06",
-  cursorAccent: "#2d1b0e",
-  selection: "rgba(78,154,6,0.35)",
-  black: "#000000", red: "#cc0000", green: "#4e9a06", yellow: "#c4a000",
+  cursor: "#eeeeec",
+  cursorAccent: "#300a24",
+  selection: "rgba(252,233,79,0.3)",
+  black: "#2e3436", red: "#cc0000", green: "#4e9a06", yellow: "#c4a000",
   blue: "#3465a4", magenta: "#75507b", cyan: "#06989a", white: "#eeeeec",
   brightBlack: "#555753", brightRed: "#ef2929", brightGreen: "#8ae234",
   brightYellow: "#fce94f", brightBlue: "#729fcf", brightMagenta: "#ad7fa8",
@@ -69,22 +69,36 @@ const UBUNTU_THEME = {
 
 const HACKER_THEME = {
   background: "#000000",
-  foreground: "#00ff41",
-  cursor: "#00ff41",
+  foreground: "#00ff00",
+  cursor: "#00ff00",
   cursorAccent: "#000000",
-  selection: "rgba(0,255,65,0.4)",
-  black: "#000000", red: "#ff0000", green: "#00ff41", yellow: "#ffff00",
-  blue: "#00cc00", magenta: "#00ff00", cyan: "#00ffaa", white: "#00ff41",
+  selection: "rgba(0,255,0,0.4)",
+  black: "#000000", red: "#ff0000", green: "#00ff00", yellow: "#ffff00",
+  blue: "#00aa00", magenta: "#00ff00", cyan: "#00ffaa", white: "#00ff00",
   brightBlack: "#003300", brightRed: "#ff3333", brightGreen: "#55ff55",
   brightYellow: "#ffff55", brightBlue: "#55ff55", brightMagenta: "#55ff55",
   brightCyan: "#55ffaa", brightWhite: "#88ff88",
 };
 
+const DRACULA_THEME = {
+  background: "#282a36",
+  foreground: "#f8f8f2",
+  cursor: "#f8f8f2",
+  cursorAccent: "#282a36",
+  selection: "rgba(68,71,90,0.5)",
+  black: "#21222c", red: "#ff5555", green: "#50fa7b", yellow: "#f1fa8c",
+  blue: "#bd93f9", magenta: "#ff79c6", cyan: "#8be9fd", white: "#f8f8f2",
+  brightBlack: "#6272a4", brightRed: "#ff6e6e", brightGreen: "#69ff94",
+  brightYellow: "#ffffa5", brightBlue: "#d6acff", brightMagenta: "#ff92df",
+  brightCyan: "#a4ffff", brightWhite: "#ffffff",
+};
+
 const THEMES: Record<ThemeKey, { label: string; theme: typeof DARK_THEME; preview: string }> = {
-  dark: { label: "Dark", theme: DARK_THEME, preview: "#0d0d1a" },
-  kali: { label: "Kali", theme: KALI_THEME, preview: "#0a0a0a" },
-  ubuntu: { label: "Ubuntu", theme: UBUNTU_THEME, preview: "#2d1b0e" },
-  hacker: { label: "Hacker", theme: HACKER_THEME, preview: "#000000" },
+  dark: { label: "GitHub Dark", theme: DARK_THEME, preview: "#0d1117" },
+  kali: { label: "Kali", theme: KALI_THEME, preview: "#1a1a2e" },
+  ubuntu: { label: "Ubuntu", theme: UBUNTU_THEME, preview: "#300a24" },
+  hacker: { label: "Matrix", theme: HACKER_THEME, preview: "#000000" },
+  dracula: { label: "Dracula", theme: DRACULA_THEME, preview: "#282a36" },
 };
 
 export default function TerminalPage() {
