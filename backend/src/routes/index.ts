@@ -9,6 +9,7 @@ import aiRouter from "./ai";
 import { terminalRouterAPI } from "./terminal";
 import tunnelRouter from "./tunnel";
 import logsRouter from "./logs";
+import activityRouter from "./activity";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use(aiRouter);
 router.use(terminalRouterAPI);
 router.use(tunnelRouter);
 router.use(logsRouter);
+router.use(activityRouter);
 
 export default router;
