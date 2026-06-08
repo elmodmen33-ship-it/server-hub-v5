@@ -99,11 +99,21 @@ terminalRouterAPI.post("/terminal/sessions", authenticate, async (req: Request, 
         TERM: "xterm-256color",
         COLORTERM: "truecolor",
         FORCE_COLOR: "true",
-        PS1: "\\[\\033[1;35m\\]â”Œâ”€â”€(\\[\\033[1;37m\\]runner\\[\\033[1;35m\\]ã‰¿\\[\\033[1;36m\\]serverhub\\[\\033[1;35m\\])-[\\[\\033[1;37m\\]\\w\\[\\033[1;35m\\]]\\n\\[\\033[1;35m\\]â””â”€\\$ \\[\\033[0m\\] ",
+        LANG: "en_US.UTF-8",
+        LC_ALL: "en_US.UTF-8",
       } as Record<string, string>,
     });
 
     session.ptyProcess = ptyProcess;
+
+    if (!isWindows) {
+      setTimeout(() => {
+        ptyProcess.write("export PS1='\\[\\033[1;35m\\]\\u@\\h:\\w\\$ \\[\\033[0m\\]'\n");
+        ptyProcess.write("bind 'set completion-ignore-case on'\n");
+        ptyProcess.write("bind 'set show-all-if-ambiguous on'\n");
+        ptyProcess.write("bind 'set colored-stats on'\n");
+      }, 300);
+    }
 
     ptyProcess.onData((data: string) => {
       const msg = JSON.stringify({ type: "output", data });
