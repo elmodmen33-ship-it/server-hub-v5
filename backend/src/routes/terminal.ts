@@ -99,23 +99,22 @@ terminalRouterAPI.post("/terminal/sessions", authenticate, async (req: Request, 
 
     session.ptyProcess = ptyProcess;
 
-    const WELCOME_MSG = "\r\n\x1b[1;35mELMODMEN\x1b[0m\r\n";
-
     if (!isWindows) {
       setTimeout(() => {
         ptyProcess.write("export LANG=en_US.UTF-8\n");
         ptyProcess.write("export LC_ALL=en_US.UTF-8\n");
+        ptyProcess.write("export LC_CTYPE=en_US.UTF-8\n");
         ptyProcess.write("export TERM=xterm-256color\n");
         ptyProcess.write("stty utf8\n");
-        ptyProcess.write("export PS1='\\[\\033[1;35m\\]\\u@\\h:\\w\\$ \\[\\033[0m\\]'\n");
+        ptyProcess.write("export PS1=$'\\e[1;35m\\xe2\\x94\\x8c\\xe2\\x94\\x80\\xe2\\x94\\x80(\\e[1;32mrunner\\xe2\\x99\\x8eserverhub\\e[1;35m)-[\\e[1;34m]\\w\\e[1;35m]\\n\\e[1;35m\\xe2\\x94\\x94\\xe2\\x94\\x80\\e[0m '\n");
         ptyProcess.write("bind 'set completion-ignore-case on'\n");
         ptyProcess.write("bind 'set show-all-if-ambiguous on'\n");
         ptyProcess.write("bind 'set colored-stats on'\n");
-        ptyProcess.write(WELCOME_MSG);
+        ptyProcess.write("clear\n");
       }, 500);
     } else {
       setTimeout(() => {
-        ptyProcess.write(WELCOME_MSG);
+        ptyProcess.write("\x1b[1;35mELMODMEN\x1b[0m\r\n");
       }, 500);
     }
 
