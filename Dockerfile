@@ -8,15 +8,15 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY backend/package.json backend/package-lock.json* ./
-RUN npm install
+COPY backend/package.json backend/package-lock.json* ./backend/
+RUN cd backend && npm install
 
-COPY frontend/package.json frontend/package-lock.json* ./../frontend/
-RUN cd ../frontend && npm install --force
+COPY frontend/package.json frontend/package-lock.json* ./frontend/
+RUN cd frontend && npm install --force
 
 COPY . .
 
-RUN cd frontend && npx vite build
+RUN cd frontend && ./node_modules/.bin/vite build
 
 EXPOSE 3001
 
