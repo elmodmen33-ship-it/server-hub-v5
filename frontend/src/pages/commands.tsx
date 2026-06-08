@@ -16,12 +16,12 @@ interface Language {
 const languages: Language[] = [
   {
     name: "Python",
-    icon: "ðŸ",
+    icon: "🐍",
     color: "#3776ab",
     sections: [
       { title: "Installation", commands: [
-        { label: "Install Python (Ubuntu/Debian)", cmd: "sudo apt install python3 python3-pip -y" },
-        { label: "Install Python (CentOS/RHEL)", cmd: "sudo yum install python3 python3-pip -y" },
+        { label: "Install Python (Ubuntu/Debian)", cmd: "apt install python3 python3-pip -y" },
+        { label: "Install Python (CentOS/RHEL)", cmd: "yum install python3 python3-pip -y" },
         { label: "Install Python (macOS)", cmd: "brew install python3" },
         { label: "Check version", cmd: "python3 --version" },
       ]},
@@ -61,11 +61,11 @@ const languages: Language[] = [
   },
   {
     name: "Node.js",
-    icon: "ðŸŸ¢",
+    icon: "🟢",
     color: "#339933",
     sections: [
       { title: "Installation", commands: [
-        { label: "Install Node.js (Ubuntu/Debian)", cmd: "sudo apt install nodejs npm -y" },
+        { label: "Install Node.js (Ubuntu/Debian)", cmd: "apt install nodejs npm -y" },
         { label: "Install via NVM", cmd: "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash" },
         { label: "Install latest LTS", cmd: "nvm install --lts" },
         { label: "Check version", cmd: "node --version" },
@@ -112,12 +112,12 @@ const languages: Language[] = [
   },
   {
     name: "PHP",
-    icon: "ðŸ˜",
+    icon: "🐘",
     color: "#777bb4",
     sections: [
       { title: "Installation", commands: [
-        { label: "Install PHP (Ubuntu/Debian)", cmd: "sudo apt install php php-cli php-mbstring php-xml php-curl -y" },
-        { label: "Install PHP (CentOS/RHEL)", cmd: "sudo yum install php php-cli php-mbstring php-xml php-curl -y" },
+        { label: "Install PHP (Ubuntu/Debian)", cmd: "apt install php php-cli php-mbstring php-xml php-curl -y" },
+        { label: "Install PHP (CentOS/RHEL)", cmd: "yum install php php-cli php-mbstring php-xml php-curl -y" },
         { label: "Install PHP (macOS)", cmd: "brew install php" },
         { label: "Check version", cmd: "php --version" },
       ]},
@@ -150,12 +150,12 @@ const languages: Language[] = [
   },
   {
     name: "Java",
-    icon: "â˜•",
+    icon: "☕",
     color: "#f89820",
     sections: [
       { title: "Installation", commands: [
-        { label: "Install JDK (Ubuntu/Debian)", cmd: "sudo apt install default-jdk -y" },
-        { label: "Install OpenJDK 17", cmd: "sudo apt install openjdk-17-jdk -y" },
+        { label: "Install JDK (Ubuntu/Debian)", cmd: "apt install default-jdk -y" },
+        { label: "Install OpenJDK 17", cmd: "apt install openjdk-17-jdk -y" },
         { label: "Check version", cmd: "java --version" },
         { label: "Check javac version", cmd: "javac --version" },
       ]},
@@ -182,11 +182,11 @@ const languages: Language[] = [
   },
   {
     name: "Go",
-    icon: "ðŸ”µ",
+    icon: "🔵",
     color: "#00add8",
     sections: [
       { title: "Installation", commands: [
-        { label: "Install Go (Ubuntu)", cmd: "sudo apt install golang-go -y" },
+        { label: "Install Go (Ubuntu)", cmd: "apt install golang-go -y" },
         { label: "Install Go (latest)", cmd: "wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz" },
         { label: "Set PATH", cmd: 'export PATH=$PATH:/usr/local/go/bin' },
         { label: "Check version", cmd: "go version" },
@@ -211,7 +211,7 @@ const languages: Language[] = [
   },
   {
     name: "Rust",
-    icon: "ðŸ¦€",
+    icon: "🦀",
     color: "#dea584",
     sections: [
       { title: "Installation", commands: [
@@ -235,11 +235,11 @@ const languages: Language[] = [
   },
   {
     name: "C#",
-    icon: "ðŸŸ£",
+    icon: "🟣",
     color: "#239120",
     sections: [
       { title: "Installation", commands: [
-        { label: "Install .NET SDK", cmd: "sudo apt install dotnet-sdk-8.0 -y" },
+        { label: "Install .NET SDK", cmd: "apt install dotnet-sdk-8.0 -y" },
         { label: "Check version", cmd: "dotnet --version" },
       ]},
       { title: "Project Management", commands: [
@@ -255,11 +255,11 @@ const languages: Language[] = [
   },
   {
     name: "Ruby",
-    icon: "ðŸ’Ž",
+    icon: "💎",
     color: "#cc342d",
     sections: [
       { title: "Installation", commands: [
-        { label: "Install Ruby (Ubuntu)", cmd: "sudo apt install ruby-full -y" },
+        { label: "Install Ruby (Ubuntu)", cmd: "apt install ruby-full -y" },
         { label: "Install via rbenv", cmd: "rbenv install 3.2.2" },
         { label: "Check version", cmd: "ruby --version" },
       ]},
@@ -281,14 +281,14 @@ const languages: Language[] = [
   },
   {
     name: "Docker",
-    icon: "ðŸ³",
+    icon: "🐳",
     color: "#2496ed",
     sections: [
       { title: "Installation", commands: [
-        { label: "Install Docker (Ubuntu)", cmd: "sudo apt install docker.io docker-compose -y" },
-        { label: "Start Docker", cmd: "sudo systemctl start docker" },
-        { label: "Enable Docker", cmd: "sudo systemctl enable docker" },
-        { label: "Add user to docker group", cmd: "sudo usermod -aG docker $USER" },
+        { label: "Install Docker (Ubuntu)", cmd: "apt install docker.io docker-compose -y" },
+        { label: "Start Docker", cmd: "systemctl start docker" },
+        { label: "Enable Docker", cmd: "systemctl enable docker" },
+        { label: "Add user to docker group", cmd: "usermod -aG docker $USER" },
         { label: "Check version", cmd: "docker --version" },
       ]},
       { title: "Images", commands: [
@@ -324,7 +324,7 @@ const languages: Language[] = [
   },
   {
     name: "Git",
-    icon: "ðŸ”€",
+    icon: "🔀",
     color: "#f05032",
     sections: [
       { title: "Setup", commands: [
@@ -364,7 +364,7 @@ const languages: Language[] = [
   },
   {
     name: "Linux",
-    icon: "ðŸ§",
+    icon: "🐧",
     color: "#fcc624",
     sections: [
       { title: "File Operations", commands: [
@@ -385,7 +385,7 @@ const languages: Language[] = [
       ]},
       { title: "Permissions", commands: [
         { label: "Make executable", cmd: "chmod +x script.sh" },
-        { label: "Change owner", cmd: "sudo chown user:group file" },
+        { label: "Change owner", cmd: "chown user:group file" },
         { label: "Change permissions", cmd: "chmod 755 file" },
         { label: "Recursive chmod", cmd: "chmod -R 755 directory" },
       ]},
@@ -418,14 +418,14 @@ const languages: Language[] = [
         { label: "DNS lookup", cmd: "nslookup google.com" },
       ]},
       { title: "Package Management (apt)", commands: [
-        { label: "Update packages", cmd: "sudo apt update" },
-        { label: "Upgrade packages", cmd: "sudo apt upgrade -y" },
-        { label: "Install package", cmd: "sudo apt install <package> -y" },
-        { label: "Remove package", cmd: "sudo apt remove <package> -y" },
+        { label: "Update packages", cmd: "apt update" },
+        { label: "Upgrade packages", cmd: "apt upgrade -y" },
+        { label: "Install package", cmd: "apt install <package> -y" },
+        { label: "Remove package", cmd: "apt remove <package> -y" },
         { label: "Search package", cmd: "apt search <keyword>" },
         { label: "Show package info", cmd: "apt show <package>" },
         { label: "List installed", cmd: "apt list --installed" },
-        { label: "Autoremove", cmd: "sudo apt autoremove -y" },
+        { label: "Autoremove", cmd: "apt autoremove -y" },
       ]},
     ],
   },
