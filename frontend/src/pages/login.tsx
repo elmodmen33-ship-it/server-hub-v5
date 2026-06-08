@@ -95,7 +95,7 @@ export default function LoginPage() {
           <div className="flex flex-col items-center mb-6">
             <div className="w-[120px] h-[120px] rounded-[20px] flex items-center justify-center mb-4 overflow-hidden"
               style={{ border: "2.5px solid rgba(139,92,246,0.55)", boxShadow: "0 0 40px rgba(139,92,246,0.35)" }}>
-              <img src={LOGO_URL} alt="ELMODMEN" className="w-full h-full object-cover rounded-[18px]" draggable={false} />
+              <img src={LOGO_URL} alt="MODMEN" className="w-full h-full object-cover rounded-[18px]" draggable={false} />
             </div>
             <h1 className="text-[20px] font-bold tracking-[0.35em] text-white mb-0.5" style={{ fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 25px rgba(139,92,246,0.3)" }}>
               SERVER HUB
