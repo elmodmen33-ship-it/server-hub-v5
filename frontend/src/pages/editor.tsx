@@ -309,7 +309,7 @@ export default function EditorPage() {
             <span className="text-zinc-600 truncate">{activeTab.path}</span>
             <div className="flex items-center gap-3 shrink-0 text-zinc-600">
               <span>{activeTab.language || "plaintext"}</span>
-              {activeTab.modified && <span className="text-amber-400">● modified</span>}
+              {activeTab.modified && <span className="text-amber-400">â— modified</span>}
             </div>
           </div>
         )}
