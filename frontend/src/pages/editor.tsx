@@ -129,6 +129,12 @@ export default function EditorPage() {
     api.listFiles(rootPath).then((data: any) => setRootFiles(data?.items || [])).catch(() => {}).finally(() => setRootLoading(false));
   }, [rootPath, refreshKey]);
 
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, []);
+
   const openFile = useCallback(async (node: FileNode) => {
     if (node.is_dir) return;
     const existing = tabs.find((t) => t.path === node.path);
@@ -145,12 +151,13 @@ export default function EditorPage() {
 
   const handleEditorChange = useCallback((value: string | undefined) => {
     if (value == null || !activeTabPath) return;
-    setTabs((prev) => prev.map((t) => t.path === activeTabPath ? { ...t, content: value, modified: true } : t));
+    const currentPath = activeTabPath;
+    setTabs((prev) => prev.map((t) => t.path === currentPath ? { ...t, content: value, modified: true } : t));
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(async () => {
       try {
-        await api.writeFile(activeTabPath, value);
-        setTabs((prev) => prev.map((t) => t.path === activeTabPath ? { ...t, modified: false } : t));
+        await api.writeFile(currentPath, value);
+        setTabs((prev) => prev.map((t) => t.path === currentPath ? { ...t, modified: false } : t));
       } catch {}
     }, 1500);
   }, [activeTabPath]);
