@@ -104,58 +104,41 @@ terminalRouterAPI.post("/terminal/sessions", async (req: Request, res: Response)
 
     session.ptyProcess = ptyProcess;
 
-    if (!isWindows) {
-      const welcomeCmd = [
-        "printf '\\n'",
-        "printf '\\033[1;35m╔══════════════════════════════════════════════════════════════╗\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m                                                              \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m   \\033[1;37m  ███████╗███╗   ███╗██████╗ ███╗   ███╗██╗  ██╗██████╗  \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m   \\033[1;37m  ██╔════╝████╗ ████║██╔══██╗████╗ ████║██║  ██║██╔══██╗ \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m   \\033[1;37m  █████╗  ██╔████╔██║██████╔╝██╔████╔██║███████║██║  ██║ \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m   \\033[1;37m  ██╔══╝  ██║╚██╔╝██║██╔═══╝ ██║╚██╔╝██║██╔══██║██║  ██║ \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m   \\033[1;37m  ███████╗██║ ╚═╝ ██║██║     ██║ ╚═╝ ██║██║  ██║██████╔╝ \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m   \\033[1;37m  ╚══════╝╚═╝     ╚═╝╚═╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚═════╝  \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m                                                              \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m              \\033[1;36m[ Server Hub v5 Terminal ]\\033[0m                     \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m                                                              \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m   \\033[1;33m\\u25cf\\033[0m \\033[1;37mFull Linux Environment (apt, sudo, bash)\\033[0m           \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m   \\033[1;33m\\u25cf\\033[0m \\033[1;37mPackage Management (apt install)\\033[0m                   \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m   \\033[1;33m\\u25cf\\033[0m \\033[1;37mFile Management (ls, cat, vim, nano)\\033[0m                \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m   \\033[1;33m\\u25cf\\033[0m \\033[1;37mNetwork Tools (curl, wget, ping, ssh)\\033[0m               \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m   \\033[1;33m\\u25cf\\033[0m \\033[1;37mSystem Monitoring (htop, top, df)\\033[0m                   \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m║\\033[0m                                                              \\033[1;35m║\\033[0m\\n'",
-        "printf '\\033[1;35m╚══════════════════════════════════════════════════════════════╝\\033[0m\\n'",
-        "printf '\\n'",
-        "printf '\\033[0m'",
-      ].join(" && ");
-      setTimeout(() => { ptyProcess.write(welcomeCmd + '\n'); }, 500);
-    } else {
-      const welcomeCmd = [
-        "Write-Host ''",
-        "Write-Host '╔══════════════════════════════════════════════════════════════╗' -ForegroundColor Magenta",
-        "Write-Host '║                                                              ║' -ForegroundColor Magenta",
-        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  ███████╗███╗   ███╗██████╗ ███╗   ███╗██╗  ██╗██████╗  ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
-        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  ██╔════╝████╗ ████║██╔══██╗████╗ ████║██║  ██║██╔══██╗ ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
-        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  █████╗  ██╔████╔██║██████╔╝██╔████╔██║███████║██║  ██║ ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
-        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  ██╔══╝  ██║╚██╔╝██║██╔═══╝ ██║╚██╔╝██║██╔══██║██║  ██║ ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
-        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  ███████╗██║ ╚═╝ ██║██║     ██║ ╚═╝ ██║██║  ██║██████╔╝ ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
-        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '  ╚══════╝╚═╝     ╚═╝╚═╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚═════╝  ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
-        "Write-Host '║                                                              ║' -ForegroundColor Magenta",
-        "Write-Host '║              ' -ForegroundColor Magenta -NoNewline; Write-Host '[ Server Hub v5 Terminal ]' -ForegroundColor Cyan -NoNewline; Write-Host '                     ║' -ForegroundColor Magenta",
-        "Write-Host '║                                                              ║' -ForegroundColor Magenta",
-        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '●' -ForegroundColor Yellow -NoNewline; Write-Host ' Full Windows Environment (PowerShell)         ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
-        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '●' -ForegroundColor Yellow -NoNewline; Write-Host ' Package Management (winget, choco)            ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
-        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '●' -ForegroundColor Yellow -NoNewline; Write-Host ' File Management (ls, cat, vim, nano)           ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
-        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '●' -ForegroundColor Yellow -NoNewline; Write-Host ' Network Tools (curl, wget, ping, ssh)          ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
-        "Write-Host '║   ' -ForegroundColor Magenta -NoNewline; Write-Host '●' -ForegroundColor Yellow -NoNewline; Write-Host ' System Monitoring (tasklist, df)               ' -ForegroundColor White -NoNewline; Write-Host '║' -ForegroundColor Magenta",
-        "Write-Host '║                                                              ║' -ForegroundColor Magenta",
-        "Write-Host '╚══════════════════════════════════════════════════════════════╝' -ForegroundColor Magenta",
-        "Write-Host ''",
-      ].join(" ; ");
-      setTimeout(() => { ptyProcess.write(welcomeCmd + '\n'); }, 500);
-    }
+    const writeWelcome = () => {
+      const ESC = "\x1b";
+      const M = `${ESC}[1;35m`;
+      const W = `${ESC}[1;37m`;
+      const C = `${ESC}[1;36m`;
+      const Y = `${ESC}[1;33m`;
+      const R = `${ESC}[0m`;
+      const lines = [
+        "",
+        `${M}╔══════════════════════════════════════════════════════════════╗${R}`,
+        `${M}║${R}                                                              ${M}║${R}`,
+        `${M}║${R}   ${W}  ███╗   ███╗██╗   ██╗██████╗ ██████╗ ███████╗ ██████╗  ${M}║${R}`,
+        `${M}║${R}   ${W}  ████╗ ████║██║   ██║██╔══██╗██╔══██╗██╔════╝██╔═══██╗ ${M}║${R}`,
+        `${M}║${R}   ${W}  ██╔████╔██║██║   ██║██████╔╝██████╔╝█████╗  ██║   ██║ ${M}║${R}`,
+        `${M}║${R}   ${W}  ██║╚██╔╝██║██║   ██║██╔═══╝ ██╔══██╗██╔══╝  ██║   ██║ ${M}║${R}`,
+        `${M}║${R}   ${W}  ██║ ╚═╝ ██║╚██████╔╝██║     ██║  ██║███████╗╚██████╔╝ ${M}║${R}`,
+        `${M}║${R}   ${W}  ╚═╝     ╚═╝ ╚═════╝ ╚═╝     ╚═╝  ╚═╝╚══════╝ ╚═════╝  ${M}║${R}`,
+        `${M}║${R}                                                              ${M}║${R}`,
+        `${M}║${R}              ${C}[ Server Hub v5 Terminal ]${R}                     ${M}║${R}`,
+        `${M}║${R}                                                              ${M}║${R}`,
+        `${M}║${R}   ${Y}*${R} ${W}Full Linux Environment (apt, sudo, bash)${R}           ${M}║${R}`,
+        `${M}║${R}   ${Y}*${R} ${W}Package Management (apt install)${R}                   ${M}║${R}`,
+        `${M}║${R}   ${Y}*${R} ${W}File Management (ls, cat, vim, nano)${R}                ${M}║${R}`,
+        `${M}║${R}   ${Y}*${R} ${W}Network Tools (curl, wget, ping, ssh)${R}               ${M}║${R}`,
+        `${M}║${R}   ${Y}*${R} ${W}System Monitoring (htop, top, df)${R}                   ${M}║${R}`,
+        `${M}║${R}                                                              ${M}║${R}`,
+        `${M}╚══════════════════════════════════════════════════════════════╝${R}`,
+        "",
+      ];
+      for (const line of lines) {
+        ptyProcess.write(line + "\r\n");
+      }
+    };
 
-    ptyProcess.onData((data: string) => {
+    setTimeout(writeWelcome, 600);((data: string) => {
       const msg = JSON.stringify({ type: "output", data });
       session.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) client.send(msg);
