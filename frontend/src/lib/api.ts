@@ -77,7 +77,7 @@ export const api = {
 
 export function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
   const token = getToken();
-  return fetch(url, {
+  return fetch(`${BASE}${url}`, {
     ...options,
     headers: { ...(options.headers || {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
   });
