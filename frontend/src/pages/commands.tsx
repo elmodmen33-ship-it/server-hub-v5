@@ -16,7 +16,7 @@ interface Language {
 const languages: Language[] = [
   {
     name: "Python",
-    icon: "🐍",
+    icon: "ðŸ",
     color: "#3776ab",
     sections: [
       { title: "Installation", commands: [
@@ -61,7 +61,7 @@ const languages: Language[] = [
   },
   {
     name: "Node.js",
-    icon: "🟢",
+    icon: "ðŸŸ¢",
     color: "#339933",
     sections: [
       { title: "Installation", commands: [
@@ -112,7 +112,7 @@ const languages: Language[] = [
   },
   {
     name: "PHP",
-    icon: "🐘",
+    icon: "ðŸ˜",
     color: "#777bb4",
     sections: [
       { title: "Installation", commands: [
@@ -150,7 +150,7 @@ const languages: Language[] = [
   },
   {
     name: "Java",
-    icon: "☕",
+    icon: "â˜•",
     color: "#f89820",
     sections: [
       { title: "Installation", commands: [
@@ -182,7 +182,7 @@ const languages: Language[] = [
   },
   {
     name: "Go",
-    icon: "🔵",
+    icon: "ðŸ”µ",
     color: "#00add8",
     sections: [
       { title: "Installation", commands: [
@@ -211,7 +211,7 @@ const languages: Language[] = [
   },
   {
     name: "Rust",
-    icon: "🦀",
+    icon: "ðŸ¦€",
     color: "#dea584",
     sections: [
       { title: "Installation", commands: [
@@ -235,7 +235,7 @@ const languages: Language[] = [
   },
   {
     name: "C#",
-    icon: "🟣",
+    icon: "ðŸŸ£",
     color: "#239120",
     sections: [
       { title: "Installation", commands: [
@@ -255,7 +255,7 @@ const languages: Language[] = [
   },
   {
     name: "Ruby",
-    icon: "💎",
+    icon: "ðŸ’Ž",
     color: "#cc342d",
     sections: [
       { title: "Installation", commands: [
@@ -281,7 +281,7 @@ const languages: Language[] = [
   },
   {
     name: "Docker",
-    icon: "🐳",
+    icon: "ðŸ³",
     color: "#2496ed",
     sections: [
       { title: "Installation", commands: [
@@ -324,7 +324,7 @@ const languages: Language[] = [
   },
   {
     name: "Git",
-    icon: "🔀",
+    icon: "ðŸ”€",
     color: "#f05032",
     sections: [
       { title: "Setup", commands: [
@@ -364,7 +364,7 @@ const languages: Language[] = [
   },
   {
     name: "Linux",
-    icon: "🐧",
+    icon: "ðŸ§",
     color: "#fcc624",
     sections: [
       { title: "File Operations", commands: [
