@@ -18,7 +18,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     if (!username || !password) {
-      setError(lang === "ar" ? "يرجى ملء جميع الحقول" : "Please fill in all fields");
+      setError(lang === "ar" ? "ÙŠØ±Ø¬Ù‰ Ù…Ù„Ø¡ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ„" : "Please fill in all fields");
       return;
     }
     setLoading(true);
@@ -87,7 +87,7 @@ export default function LoginPage() {
         style={langBtnStyle}
       >
         <Globe className="w-4 h-4" />
-        {lang === "en" ? "العربية" : "English"}
+        {lang === "en" ? "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©" : "English"}
       </button>
 
       <div className="w-full max-w-[400px] relative z-10" dir={lang === "ar" ? "rtl" : "ltr"}>
@@ -119,7 +119,7 @@ export default function LoginPage() {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder={lang === "ar" ? "أدخل اسم المستخدم" : "Enter your username"}
+                  placeholder={lang === "ar" ? "Ø£Ø¯Ø®Ù„ Ø§Ø³Ù… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…" : "Enter your username"}
                   autoFocus
                   className="w-full h-[48px] pl-10 pr-4 rounded-xl text-white text-[14px] placeholder:text-zinc-600 focus:outline-none transition-all"
                   style={inputStyle}
@@ -139,7 +139,7 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder={lang === "ar" ? "أدخل كلمة المرور" : "Enter your password"}
+                  placeholder={lang === "ar" ? "Ø£Ø¯Ø®Ù„ ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±" : "Enter your password"}
                   className="w-full h-[48px] pl-10 pr-11 rounded-xl text-white text-[14px] placeholder:text-zinc-600 focus:outline-none transition-all"
                   style={inputStyle}
                   onFocus={handleFocus}
