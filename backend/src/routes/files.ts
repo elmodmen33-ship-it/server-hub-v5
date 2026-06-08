@@ -5,6 +5,7 @@ import * as path from "path";
 import { execFile } from "child_process";
 import { promisify } from "util";
 import { logger } from "../lib/logger";
+import { authenticate } from "../middleware/authenticate";
 
 const execFileAsync = promisify(execFile);
 
@@ -14,7 +15,9 @@ const BASE_DIR = process.env.FILES_BASE_DIR || process.env.HOME || "/";
 
 function safePath(requestPath: string): string | null {
   const normalized = path.normalize(requestPath);
-  return normalized;
+  const resolved = path.resolve(BASE_DIR, normalized);
+  if (!resolved.startsWith(BASE_DIR)) return null;
+  return resolved;
 }
 
 function formatBytes(bytes: number): string {
@@ -198,7 +201,7 @@ function getFileInfo(
   }
 }
 
-router.get("/files/list", async (req: Request, res: Response): Promise<void> => {
+router.get("/files/list", authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
     const reqPath = (req.query.path as string) || "/";
     const dirPath = safePath(reqPath);
@@ -234,7 +237,7 @@ router.get("/files/list", async (req: Request, res: Response): Promise<void> => 
   }
 });
 
-router.get("/files/read", async (req: Request, res: Response): Promise<void> => {
+router.get("/files/read", authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
     const filePath = req.query.path as string;
     if (!filePath) {
@@ -282,7 +285,7 @@ router.get("/files/read", async (req: Request, res: Response): Promise<void> => 
   }
 });
 
-router.post("/files/write", async (req: Request, res: Response): Promise<void> => {
+router.post("/files/write", authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
     const { path: filePath, content } = req.body;
     if (!filePath || content == null) {
@@ -305,7 +308,7 @@ router.post("/files/write", async (req: Request, res: Response): Promise<void> =
   }
 });
 
-router.delete("/files/delete", async (req: Request, res: Response): Promise<void> => {
+router.delete("/files/delete", authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
     const filePath = req.query.path as string;
     if (!filePath) {
@@ -338,7 +341,7 @@ router.delete("/files/delete", async (req: Request, res: Response): Promise<void
   }
 });
 
-router.post("/files/rename", async (req: Request, res: Response): Promise<void> => {
+router.post("/files/rename", authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
     const { oldPath, newPath } = req.body;
     if (!oldPath || !newPath) {
@@ -367,7 +370,7 @@ router.post("/files/rename", async (req: Request, res: Response): Promise<void> 
   }
 });
 
-router.post("/files/mkdir", async (req: Request, res: Response): Promise<void> => {
+router.post("/files/mkdir", authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
     const { path: dirPath } = req.body;
     if (!dirPath) {
@@ -389,7 +392,7 @@ router.post("/files/mkdir", async (req: Request, res: Response): Promise<void> =
   }
 });
 
-router.post("/files/upload", async (req: Request, res: Response): Promise<void> => {
+router.post("/files/upload", authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
     const busboy = await import("busboy");
     const uploadPath = (req.headers["x-upload-path"] as string) || "/tmp";
@@ -422,7 +425,7 @@ router.post("/files/upload", async (req: Request, res: Response): Promise<void> 
   }
 });
 
-router.get("/files/search", async (req: Request, res: Response): Promise<void> => {
+router.get("/files/search", authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
     const q = req.query.q as string;
     const searchPath = (req.query.path as string) || "/";
@@ -474,7 +477,7 @@ router.get("/files/search", async (req: Request, res: Response): Promise<void> =
   }
 });
 
-router.post("/files/extract", async (req: Request, res: Response): Promise<void> => {
+router.post("/files/extract", authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
     const { path: archivePath, dest } = req.body;
     if (!archivePath) {
