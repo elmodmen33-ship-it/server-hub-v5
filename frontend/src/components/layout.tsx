@@ -105,7 +105,7 @@ export function Layout({ children, path, navigate }: LayoutProps) {
         <div className="flex items-center gap-2.5 overflow-hidden">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 overflow-hidden"
             style={{ boxShadow: "0 0 20px rgba(139,92,246,0.3)", border: "1px solid rgba(139,92,246,0.3)" }}>
-            <img src="https://i.ibb.co/s9P5XZrz/IMG-20260525-202044-835.jpg" alt="ELMODMEN" className="w-full h-full object-cover rounded-xl" />
+            <img src="https://i.ibb.co/s9P5XZrz/IMG-20260525-202044-835.jpg" alt="MODMEN" className="w-full h-full object-cover rounded-xl" />
           </div>
           {!collapsed && (
             <div className="flex flex-col overflow-hidden">
@@ -153,7 +153,7 @@ export function Layout({ children, path, navigate }: LayoutProps) {
           <button onClick={() => setLang(lang === "en" ? "ar" : "en")}
             className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-500 hover:text-white hover:bg-white/5 transition-all text-sm">
             <Globe className="w-5 h-5 shrink-0" />
-            <span>{lang === "en" ? "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©" : "English"}</span>
+            <span>{lang === "en" ? "العربية" : "English"}</span>
           </button>
         )}
         <div onClick={() => { navigate("/profile"); onNav?.(); }}
@@ -200,7 +200,7 @@ export function Layout({ children, path, navigate }: LayoutProps) {
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden"
               style={{ border: "1px solid rgba(139,92,246,0.3)" }}>
-              <img src="https://i.ibb.co/s9P5XZrz/IMG-20260525-202044-835.jpg" alt="ELMODMEN" className="w-full h-full object-cover rounded-lg" />
+              <img src="https://i.ibb.co/s9P5XZrz/IMG-20260525-202044-835.jpg" alt="MODMEN" className="w-full h-full object-cover rounded-lg" />
             </div>
             <span className="font-bold text-white text-sm tracking-wider" style={{ fontFamily: "'JetBrains Mono', monospace" }}>SERVER HUB</span>
           </div>
