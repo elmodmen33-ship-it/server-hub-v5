@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   Activity, TerminalSquare, Code, Folder, Bot,
   ChevronLeft, ChevronRight, Menu, Settings, User,
-  Shield, LogOut, Globe, X, Bell, Wifi, BookOpen,
+  Shield, LogOut, Globe, X, Bell, Wifi, BookOpen, BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
@@ -75,6 +75,7 @@ export function Layout({ children, path, navigate }: LayoutProps) {
 
   const adminNavItems = user?.role === "admin" ? [
     { href: "/admin", label: t("admin"), icon: Shield },
+    { href: "/activity", label: t("activity_log"), icon: BarChart3 },
     { href: "/settings", label: t("settings"), icon: Settings },
   ] : [];
 
@@ -153,7 +154,7 @@ export function Layout({ children, path, navigate }: LayoutProps) {
           <button onClick={() => setLang(lang === "en" ? "ar" : "en")}
             className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-zinc-500 hover:text-white hover:bg-white/5 transition-all text-sm">
             <Globe className="w-5 h-5 shrink-0" />
-            <span>{lang === "en" ? "العربية" : "English"}</span>
+            <span>{lang === "en" ? "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©" : "English"}</span>
           </button>
         )}
         <div onClick={() => { navigate("/profile"); onNav?.(); }}
