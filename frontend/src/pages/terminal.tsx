@@ -101,6 +101,20 @@ const THEMES: Record<ThemeKey, { label: string; theme: typeof DARK_THEME; previe
   dracula: { label: "Dracula", theme: DRACULA_THEME, preview: "#282a36" },
 };
 
+const STORAGE_KEY = "sh_terminal_tabs";
+
+function loadSavedTabs(): Tab[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return [];
+}
+
+function saveTabs(tabs: Tab[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tabs));
+}
+
 export default function TerminalPage() {
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
@@ -108,8 +122,11 @@ export default function TerminalPage() {
   const [logs, setLogs] = useState<string[]>([]);
   const [showLogs, setShowLogs] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
-  const [termTheme, setTermTheme] = useState<ThemeKey>("dark");
+  const [termTheme, setTermTheme] = useState<ThemeKey>(() => {
+    return (localStorage.getItem("sh_term_theme") as ThemeKey) || "kali";
+  });
   const [showThemePicker, setShowThemePicker] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
   const resources = useRef<Record<string, TabResources>>({});
   const containerRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -124,10 +141,8 @@ export default function TerminalPage() {
   useEffect(() => { logsEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [logs]);
 
   useEffect(() => {
-    if (tabs.length === 0) {
-      createTab("Terminal");
-    }
-  }, []);
+    localStorage.setItem("sh_term_theme", termTheme);
+  }, [termTheme]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -162,7 +177,7 @@ export default function TerminalPage() {
 
     ws.onopen = () => {
       setStatus(tabId, "connected");
-      addLog(`Session ${sessionId.slice(0, 8)} connected`);
+      addLog(`Session connected`);
       const { fitAddon } = getRes(tabId);
       if (fitAddon) {
         try {
@@ -181,7 +196,7 @@ export default function TerminalPage() {
         const msg = JSON.parse(evt.data as string);
         const { term } = getRes(tabId);
         if (msg.type === "output" && term) term.write(msg.data);
-        else if (msg.type === "exit") { setStatus(tabId, "offline"); addLog(`Session ${sessionId.slice(0, 8)} exited`); }
+        else if (msg.type === "exit") { setStatus(tabId, "offline"); addLog(`Session exited`); }
       } catch {}
     };
 
@@ -189,11 +204,11 @@ export default function TerminalPage() {
       const r = getRes(tabId);
       if (r.heartbeat) { clearInterval(r.heartbeat); r.heartbeat = null; }
       setStatus(tabId, "reconnecting");
-      addLog(`Session ${sessionId.slice(0, 8)} disconnected, reconnecting...`);
+      addLog(`Disconnected, reconnecting...`);
       setTimeout(() => { if (getRes(tabId).ws === ws || getRes(tabId).ws === null) connectWs(tabId, sessionId); }, 3000);
     };
 
-    ws.onerror = () => { setStatus(tabId, "offline"); addLog(`Session ${sessionId.slice(0, 8)} error`); };
+    ws.onerror = () => { setStatus(tabId, "offline"); addLog(`Connection error`); };
   }, [addLog]);
 
   const mountTerminal = useCallback((tabId: string, el: HTMLDivElement, sessionId: string) => {
@@ -211,8 +226,6 @@ export default function TerminalPage() {
       cursorStyle: "bar",
       allowTransparency: true,
       scrollback: 50000,
-      allowProposedApi: true,
-      rendererType: "canvas",
       smoothScrollDuration: 0,
       drawBoldTextInBrightColors: true,
       minimumContrastRatio: 1,
@@ -246,27 +259,28 @@ export default function TerminalPage() {
       return true;
     });
 
-    term.onSelectionChange(() => {
-      const sel = term.getSelection();
-      if (sel) navigator.clipboard.writeText(sel).catch(() => {});
-    });
-
     connectWs(tabId, sessionId);
   }, [connectWs, termTheme]);
 
   const createTab = useCallback(async (name?: string) => {
-    const tabName = name || `Terminal ${tabs.length + 1}`;
+    const tabName = name || `Terminal`;
     try {
       const session = await api.createTerminalSession({ name: tabName });
       const tabId = session.id;
-      setTabs((prev) => [...prev, { id: tabId, name: tabName, sessionId: session.id }]);
+      const newTab = { id: tabId, name: tabName, sessionId: session.id };
+      setTabs((prev) => {
+        const updated = [...prev, newTab];
+        saveTabs(updated);
+        return updated;
+      });
       setActiveTabId(tabId);
-      addLog(`Created terminal session: ${tabName}`);
-      toast({ title: "Terminal created", description: tabName, variant: "success" });
+      addLog(`Created terminal: ${tabName}`);
+      return newTab;
     } catch {
       toast({ title: "Failed to create terminal", variant: "destructive" });
+      return null;
     }
-  }, [tabs.length, addLog, toast]);
+  }, [addLog, toast]);
 
   const closeTab = useCallback((tabId: string) => {
     const res = getRes(tabId);
@@ -279,12 +293,28 @@ export default function TerminalPage() {
     if (tab) api.killTerminalSession(tab.sessionId).catch(() => {});
     setTabs((prev) => {
       const rem = prev.filter((t) => t.id !== tabId);
+      saveTabs(rem);
       setActiveTabId((curr) => curr === tabId ? (rem.length > 0 ? rem[rem.length - 1].id : null) : curr);
       return rem;
     });
     setStatuses((prev) => { const n = { ...prev }; delete n[tabId]; return n; });
-    addLog(`Closed terminal session`);
+    addLog(`Closed terminal`);
   }, [tabs, addLog]);
+
+  // Initialize: load saved tabs or create default
+  useEffect(() => {
+    if (initialized) return;
+    setInitialized(true);
+
+    const saved = loadSavedTabs();
+    if (saved.length > 0) {
+      setTabs(saved);
+      setActiveTabId(saved[0].id);
+      addLog("Restored saved sessions");
+    } else {
+      createTab("Terminal");
+    }
+  }, [initialized, createTab, addLog]);
 
   useEffect(() => {
     if (!activeTabId) return;
@@ -319,7 +349,7 @@ export default function TerminalPage() {
     const newTheme = THEMES[termTheme].theme;
     for (const tabId of Object.keys(resources.current)) {
       const { term } = resources.current[tabId];
-      if (term) term.setOption("theme", newTheme);
+      if (term) term.options.theme = newTheme;
     }
   }, [termTheme]);
 
@@ -384,12 +414,7 @@ export default function TerminalPage() {
         )}
 
         <div className="relative shrink-0 pl-2 border-l" style={{ borderColor: "var(--border)" }} ref={themePickerRef}>
-          <Button
-            variant="ghost" size="sm"
-            onClick={() => setShowThemePicker(!showThemePicker)}
-            title="Theme"
-            className="h-7 px-2 gap-1.5 text-xs"
-          >
+          <Button variant="ghost" size="sm" onClick={() => setShowThemePicker(!showThemePicker)} title="Theme" className="h-7 px-2 gap-1.5 text-xs">
             <div className="w-3 h-3 rounded-full border border-white/20" style={{ background: THEMES[termTheme].preview }} />
             <Palette className="w-3 h-3" />
             <ChevronDown className="w-3 h-3" />
@@ -398,13 +423,10 @@ export default function TerminalPage() {
             <div className="absolute right-0 top-full mt-1 z-50 rounded-lg border shadow-xl p-1 min-w-[140px]"
               style={{ background: headerBg, borderColor: "var(--border)" }}>
               {(Object.keys(THEMES) as ThemeKey[]).map((key) => (
-                <button
-                  key={key}
-                  onClick={() => { setTermTheme(key); setShowThemePicker(false); }}
+                <button key={key} onClick={() => { setTermTheme(key); setShowThemePicker(false); }}
                   className={`flex items-center gap-2 w-full px-2.5 py-1.5 rounded-md text-xs font-mono transition-colors ${
                     termTheme === key ? "bg-primary/20 text-foreground" : "text-zinc-500 hover:text-zinc-300 hover:bg-white/5"
-                  }`}
-                >
+                  }`}>
                   <div className="w-3 h-3 rounded-full border border-white/20 shrink-0" style={{ background: THEMES[key].preview }} />
                   <span>{THEMES[key].label}</span>
                   {termTheme === key && <span className="ml-auto text-accent text-[10px]">active</span>}
@@ -482,8 +504,8 @@ export default function TerminalPage() {
       {activeTabId && tabs.length > 0 && (
         <div className="flex items-center justify-between px-4 py-1 border-t shrink-0 text-xs font-mono" style={{ background: headerBg, borderColor: "var(--border)" }}>
           <div className="flex items-center gap-3 text-zinc-700">
-            <span>bash</span><span>·</span>
-            <span>{tabs.find((t) => t.id === activeTabId)?.name}</span><span>·</span>
+            <span>bash</span><span>Â·</span>
+            <span>{tabs.find((t) => t.id === activeTabId)?.name}</span><span>Â·</span>
             <span className="text-zinc-600">{tabs.length} session(s)</span>
           </div>
           <div className="flex items-center gap-2">
