@@ -5,9 +5,9 @@ services:
     region: oregon
     plan: free
     buildCommand: |
-      cd backend && npm install
-      cd ../frontend && npm install && npx vite build
-    startCommand: cd backend && npx tsx src/index.ts
+      cd backend && npm install --no-package-lock
+      cd ../frontend && npm install --no-package-lock && npx vite build
+    startCommand: sh -c "cd backend && npx tsx src/index.ts"
     envVars:
       - key: PORT
         value: 3001

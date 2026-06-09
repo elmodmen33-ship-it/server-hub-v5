@@ -11,12 +11,16 @@ const execFileAsync = promisify(execFile);
 
 const router: IRouter = Router();
 
-const BASE_DIR = process.env.FILES_BASE_DIR || process.env.HOME || "/";
+const BASE_DIR = process.env.FILES_BASE_DIR || path.join(process.cwd(), "data");
+
+if (!fs.existsSync(BASE_DIR)) {
+  try { fs.mkdirSync(BASE_DIR, { recursive: true }); } catch {}
+}
 
 function safePath(requestPath: string): string | null {
   const normalized = path.normalize(requestPath);
   const resolved = path.resolve(BASE_DIR, normalized);
-  if (!resolved.startsWith(BASE_DIR)) return null;
+  if (!resolved.startsWith(path.resolve(BASE_DIR))) return null;
   return resolved;
 }
 

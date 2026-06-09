@@ -18,6 +18,8 @@ await build({
     "sharp",
     "ssh2",
     "fsevents",
+    "pino",
+    "ws"
   ],
   plugins: [esbuildPluginPino({ transports: ["pino-pretty"] })],
   banner: {

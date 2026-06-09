@@ -2,7 +2,6 @@ FROM node:20-slim
 
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
-ENV PYTHONIOENCODING=utf-8
 
 RUN apt-get update && apt-get install -y \
     python3 \
@@ -15,15 +14,21 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY backend/package.json backend/package-lock.json* ./backend/
-RUN cd backend && npm install
+# Backend
+COPY backend/package.json ./backend/
+# Using --no-package-lock to avoid errors if the lockfile is missing
+RUN cd backend && npm install --no-package-lock
 
-COPY frontend/package.json frontend/package-lock.json* ./frontend/
-RUN cd frontend && npm install --force
+# Frontend
+COPY frontend/package.json ./frontend/
+RUN cd frontend && npm install --no-package-lock
 
-COPY . .
+# Copy source
+COPY backend/ ./backend/
+COPY frontend/ ./frontend/
 
-RUN cd frontend && ./node_modules/.bin/vite build
+# Build frontend
+RUN cd frontend && npm run build
 
 EXPOSE 3001
 

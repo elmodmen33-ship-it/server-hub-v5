@@ -19,6 +19,10 @@ export default defineConfig({
         changeOrigin: true,
         ws: true,
       },
+      "/ws": {
+        target: process.env.VITE_API_URL || "http://localhost:3001",
+        ws: true,
+      }
     },
   },
   build: {

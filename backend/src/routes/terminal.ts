@@ -38,14 +38,7 @@ function detectWslShell(): string | null {
   return null;
 }
 
-function getShellInitScript(): string {
-  const initPath = path.join(__dirname, "..", "shell-init.ps1");
-  try {
-    return fs.readFileSync(initPath, "utf8").trim();
-  } catch {
-    return "[Console]::OutputEncoding=[System.Text.Encoding]::UTF8";
-  }
-}
+
 
 terminalRouterAPI.get("/terminal/sessions", authenticate, async (_req: Request, res: Response): Promise<void> => {
   const list = Array.from(sessions.values()).map((s) => ({
@@ -132,6 +125,7 @@ terminalRouterAPI.post("/terminal/sessions", authenticate, async (req: Request, 
       session.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) client.send(msg);
       });
+      sessions.delete(id);
     });
 
     sessions.set(id, session);

@@ -35,7 +35,7 @@ router.put("/users/:id", authenticate, requireAdmin, async (req: Request, res: R
   try {
     const { password, ...updates } = req.body;
     if (password) updates.password_hash = bcrypt.hashSync(password, 10);
-    const updated = storage.updateUser(req.params.id, updates);
+    const updated = storage.updateUser(req.params.id as string, updates);
     if (!updated) { res.status(404).json({ error: "User not found" }); return; }
     res.json({ id: updated.id, username: updated.username, role: updated.role, display_name: updated.display_name, disabled: updated.disabled, expires_at: updated.expires_at });
   } catch (err) {
@@ -46,10 +46,10 @@ router.put("/users/:id", authenticate, requireAdmin, async (req: Request, res: R
 
 router.delete("/users/:id", authenticate, requireAdmin, async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = storage.getUserById(req.params.id);
+    const user = storage.getUserById(req.params.id as string);
     if (!user) { res.status(404).json({ error: "User not found" }); return; }
     if (user.username === "elmodmen") { res.status(403).json({ error: "Cannot delete main admin" }); return; }
-    storage.deleteUser(req.params.id);
+    storage.deleteUser(req.params.id as string);
     res.json({ success: true });
   } catch (err) {
     logger.error({ err }, "Delete user failed");
