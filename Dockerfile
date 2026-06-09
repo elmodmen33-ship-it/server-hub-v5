@@ -27,9 +27,12 @@ RUN cd frontend && npm install --no-package-lock
 COPY backend/ ./backend/
 COPY frontend/ ./frontend/
 
+# Build backend
+RUN cd backend && npm run build
+
 # Build frontend
 RUN cd frontend && npm run build
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "cd backend && npx tsx src/index.ts"]
+CMD ["sh", "-c", "cd backend && npm start"]

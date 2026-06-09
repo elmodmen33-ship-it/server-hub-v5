@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 
-const SECRET = process.env.JWT_SECRET;
-if (!SECRET) {
-  throw new Error("JWT_SECRET environment variable is required!");
+const SECRET = process.env.JWT_SECRET || "default-secret-please-change-me-in-production-123";
+if (SECRET === "default-secret-please-change-me-in-production-123") {
+  console.warn("⚠️ WARNING: JWT_SECRET environment variable is missing! Using a default secret. This is insecure for production!");
 }
 
 export interface JwtPayload {

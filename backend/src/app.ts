@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use("/api", router);
 
-const frontendDist = path.join(process.cwd(), "..", "frontend", "dist");
+const frontendDist = path.join(__dirname, "..", "..", "frontend", "dist");
 if (fs.existsSync(frontendDist)) {
   app.use(express.static(frontendDist, { setHeaders: (res, filePath) => {
     if (filePath.endsWith(".html")) {
